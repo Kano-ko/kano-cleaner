@@ -51,7 +51,7 @@ Para generar el `.exe` portable:
 npm run dist
 ```
 
-El archivo sale en `release\KanoCleaner-0.1.0-portable.exe`.
+El archivo sale en `release\KanoCleaner-1.0.0-portable.exe`.
 
 Pruebas de desarrollo (no forman parte de la versión publicada):
 

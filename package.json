@@ -1,7 +1,7 @@
 {
   "name": "kano-cleaner",
   "productName": "Kano Cleaner",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Limpiador, comprobador de seguridad y mantenimiento para Windows 10 y 11",
   "main": "electron/main.js",
   "private": true,

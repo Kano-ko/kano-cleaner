@@ -1,0 +1,13 @@
+﻿gh.exe : 
+En línea: 1 Carácter: 49
++ ... aner'; '' | & 'C:\Program Files\GitHub CLI\gh.exe' auth login --hostn ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+! One-time code (BEFE-F34E) copied to clipboard
+Open this URL to continue in your web browser: https://github.com/login/device
+Ô£ô Authentication complete.
+- gh config set -h github.com git_protocol https
+Ô£ô Configured git protocol
+Ô£ô Logged in as Kano-ko
