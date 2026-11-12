@@ -1,0 +1,80 @@
+name: Informar de un fallo
+description: Algo no funciona o da un resultado equivocado.
+title: '[Fallo] '
+labels: ['fallo']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por tomarte el tiempo de informar. Cuanto más concreto sea, más fácil es
+        arreglarlo.
+
+        Antes de seguir: si el problema es que Windows muestra el aviso azul
+        "Windows protegió tu PC", eso es normal en programas sin firma digital. En el
+        README se explica cómo continuar.
+
+  - type: textarea
+    id: que-pasa
+    attributes:
+      label: Qué pasa
+      description: Describe el problema en una o dos frases.
+      placeholder: Al pulsar "Limpiar lo seleccionado" no borra nada y no sale ningún aviso.
+    validations:
+      required: true
+
+  - type: textarea
+    id: pasos
+    attributes:
+      label: Cómo reproducirlo
+      description: Los pasos exactos, en orden.
+      placeholder: |
+        1. Abrir Limpieza
+        2. Marcar "Caché de navegadores"
+        3. Pulsar "Limpiar lo seleccionado"
+    validations:
+      required: true
+
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Qué esperabas que pasara
+      placeholder: Que borrara los archivos y mostrara cuánto se ha liberado.
+    validations:
+      required: false
+
+  - type: input
+    id: version-app
+    attributes:
+      label: Versión de Kano Cleaner
+      description: Aparece abajo a la izquierda del menú lateral, o en Configuración.
+      placeholder: 0.1.0
+    validations:
+      required: true
+
+  - type: input
+    id: version-windows
+    attributes:
+      label: Versión de Windows
+      description: Ajustes → Sistema → Información, o escribe "winver" en el menú de inicio.
+      placeholder: Windows 11 Pro, build 26100
+    validations:
+      required: true
+
+  - type: dropdown
+    id: admin
+    attributes:
+      label: ¿Lo ejecutaste como administrador?
+      options:
+        - 'No'
+        - 'Sí'
+        - 'No lo sé'
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Capturas o datos extra
+      description: Puedes arrastrar imágenes aquí. Tapa cualquier dato personal que no quieras publicar.
+    validations:
+      required: false

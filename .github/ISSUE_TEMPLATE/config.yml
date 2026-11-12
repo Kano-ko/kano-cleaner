@@ -1,0 +1,5 @@
+﻿blank_issues_enabled: true
+contact_links:
+  - name: Problema de seguridad
+    url: https://github.com/Kano-ko/kano-cleaner/security/advisories/new
+    about: No publiques fallos de seguridad en Issues. Usa el aviso privado.

@@ -1,0 +1,22 @@
+# Dependencias y resultados de compilación (no se suben al repositorio)
+node_modules/
+release/
+dist/
+
+# Archivos temporales de desarrollo
+shots-out.txt
+selftest-out.txt
+*.log
+*.tmp
+
+# Basura del sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Capturas que pueden contener datos del equipo donde se generaron
+# (programas instalados, rutas, exclusiones del antivirus). Solo se publican
+# las genéricas.
+docs/capturas/inicio.png
+docs/capturas/desinstalador.png
+docs/capturas/seguridad.png

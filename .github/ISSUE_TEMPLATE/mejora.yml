@@ -1,0 +1,50 @@
+name: Proponer una mejora
+description: Una idea para que el programa haga algo mejor o algo nuevo.
+title: '[Idea] '
+labels: ['mejora']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Antes de proponer, ten en cuenta las tres reglas del proyecto:
+
+        - **Gratis y desbloqueado.** No hay versión Pro ni funciones de pago.
+        - **Sin inventos.** Si algo no se puede comprobar de verdad, no se finge.
+        - **Sin riesgo para el usuario.** Nada de limpiar el registro ni de cerrar procesos
+          a la fuerza.
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: Qué propones
+      placeholder: Poder elegir qué copia de un duplicado se conserva (la más antigua o la más nueva).
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivo
+    attributes:
+      label: Por qué sería útil
+      placeholder: Ahora siempre conserva la primera que encuentra, y a veces interesa la más reciente.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: seccion
+    attributes:
+      label: Sección afectada
+      options:
+        - Chequeo
+        - Limpieza
+        - Desinstalador
+        - Buscador de duplicados
+        - Uso del disco
+        - Rendimiento
+        - Administrador de inicio
+        - Actualizaciones
+        - Dispositivos y controladores
+        - Seguridad
+        - Configuración
+        - Otra / nueva sección
+    validations:
+      required: true

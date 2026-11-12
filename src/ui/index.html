@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; script-src 'self'" />
+    <title>Kano Cleaner</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-theme="dark">
+    <header class="titlebar">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2.6 20 6v6.1c0 4.6-3.3 8.3-8 9.3-4.7-1-8-4.7-8-9.3V6l8-3.4Z" />
+          <path d="m8.6 12.1 2.3 2.4 4.5-4.8" class="brand-check" />
+        </svg>
+        <span class="brand-name">Kano<span class="brand-thin">Cleaner</span></span>
+      </div>
+
+      <div class="titlebar-right">
+        <span id="adminBadge" class="badge badge-ghost" hidden></span>
+        <div class="window-controls">
+          <button id="winMin" class="win-btn" title="Minimizar" aria-label="Minimizar">
+            <svg viewBox="0 0 12 12"><path d="M2 6h8" /></svg>
+          </button>
+          <button id="winMax" class="win-btn" title="Maximizar" aria-label="Maximizar">
+            <svg viewBox="0 0 12 12"><rect x="2.5" y="2.5" width="7" height="7" /></svg>
+          </button>
+          <button id="winClose" class="win-btn win-btn-close" title="Cerrar" aria-label="Cerrar">
+            <svg viewBox="0 0 12 12"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" /></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <nav class="sidebar" id="sidebar" aria-label="Secciones"></nav>
+      <main class="content" id="content" tabindex="-1"></main>
+    </div>
+
+    <div id="toasts" class="toasts" aria-live="polite"></div>
+    <div id="modalRoot"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

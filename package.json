@@ -1,0 +1,42 @@
+{
+  "name": "kano-cleaner",
+  "productName": "Kano Cleaner",
+  "version": "0.1.0",
+  "description": "Limpiador, comprobador de seguridad y mantenimiento para Windows 10 y 11",
+  "main": "electron/main.js",
+  "private": true,
+  "author": "Tomás",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win portable"
+  },
+  "devDependencies": {
+    "electron": "45.0.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.kanoko.kanocleaner",
+    "productName": "Kano Cleaner",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "electron/**/*",
+      "!electron/selftest.js",
+      "!electron/shots.js",
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "build/icon.ico",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "portable": {
+      "artifactName": "KanoCleaner-${version}-portable.exe"
+    }
+  }
+}

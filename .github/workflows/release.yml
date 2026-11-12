@@ -1,0 +1,48 @@
+name: Publicar versión
+
+# Se ejecuta al subir una etiqueta que empiece por "v" (por ejemplo v0.1.0).
+# Compila el .exe en un equipo limpio de GitHub, calcula su huella SHA256 y crea
+# la versión pública con el archivo adjunto. Nada se compila en un PC personal.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publicar:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Empaquetar el .exe portable
+        run: npm run dist
+
+      - name: Calcular la huella SHA256
+        shell: pwsh
+        run: |
+          Get-ChildItem release -Filter *.exe | ForEach-Object {
+            $huella = (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower()
+            "$huella  $($_.Name)"
+          } | Set-Content -Path release/SHA256SUMS.txt -Encoding ascii
+          Get-Content release/SHA256SUMS.txt
+
+      - name: Crear la versión en GitHub
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/*.exe
+            release/SHA256SUMS.txt
+          generate_release_notes: true
+          fail_on_unmatched_files: true

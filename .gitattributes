@@ -1,0 +1,6 @@
+# Normaliza los finales de línea para que el repositorio se vea igual en Windows,
+# Linux y macOS. Las imágenes no se tocan.
+* text=auto eol=lf
+
+*.png binary
+*.ico binary
