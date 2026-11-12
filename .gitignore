@@ -6,6 +6,7 @@ dist/
 # Archivos temporales de desarrollo
 shots-out.txt
 selftest-out.txt
+gh-auth.txt
 *.log
 *.tmp
 
