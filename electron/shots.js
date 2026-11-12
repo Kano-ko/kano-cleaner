@@ -24,9 +24,23 @@ app.on('browser-window-created', (_event, win) => {
       await wait(3000);
       await shoot('chequeo');
 
-      for (const view of ['limpieza', 'seguridad', 'disco', 'inicio', 'desinstalador']) {
+      for (const view of ['limpieza', 'controladores', 'seguridad', 'disco', 'inicio', 'desinstalador']) {
         await win.webContents.executeJavaScript(`go(${JSON.stringify(view)})`);
         await wait(1500);
+        if (view === 'controladores') {
+          // La captura interesa con la búsqueda ya hecha.
+          await win.webContents.executeJavaScript(
+            `document.querySelector('[data-action="driver-search"]')?.click()`
+          );
+          for (let i = 0; i < 60; i++) {
+            await wait(1000);
+            const listo = await win.webContents.executeJavaScript(
+              `!document.querySelector('#driverUpdates .progress-line')`
+            );
+            if (listo) break;
+          }
+          await wait(500);
+        }
         await shoot(view);
       }
 

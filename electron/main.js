@@ -13,6 +13,7 @@ const apps = require('../src/core/apps');
 const files = require('../src/core/files');
 const security = require('../src/core/security');
 const health = require('../src/core/health');
+const drivers = require('../src/core/drivers');
 
 const isDev = !app.isPackaged;
 let mainWindow = null;
@@ -104,6 +105,19 @@ ipcMain.handle('app:openPath', async (_e, target) => {
 
 ipcMain.handle('app:showInFolder', (_e, target) => {
   if (target && fssync.existsSync(target)) shell.showItemInFolder(target);
+  return { ok: true };
+});
+
+/**
+ * Abre una página web o un panel de Windows en el navegador o en Ajustes.
+ * Solo se permiten estos protocolos: nada de archivos locales ni comandos.
+ */
+ipcMain.handle('app:openUrl', async (_e, url) => {
+  const permitidos = ['https://', 'http://', 'ms-settings:', 'ms-windows-store:'];
+  if (typeof url !== 'string' || !permitidos.some((p) => url.startsWith(p))) {
+    return { ok: false, error: 'Dirección no permitida' };
+  }
+  await shell.openExternal(url);
   return { ok: true };
 });
 
@@ -267,6 +281,10 @@ ipcMain.handle('security:scan', async (_e, payload) => {
 ipcMain.handle('health:info', () => health.info());
 ipcMain.handle('health:processes', () => health.processes());
 ipcMain.handle('health:devices', () => health.problemDevices());
+
+// ---------------- Controladores ----------------
+ipcMain.handle('drivers:graphics', () => drivers.graphics());
+ipcMain.handle('drivers:updates', () => drivers.updates());
 
 // ---------------- winget ----------------
 ipcMain.handle('winget:list', () => apps.upgrades());

@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld('kano', {
   info: () => ipcRenderer.invoke('app:info'),
   openPath: (target) => ipcRenderer.invoke('app:openPath', target),
   showInFolder: (target) => ipcRenderer.invoke('app:showInFolder', target),
+  openUrl: (url) => ipcRenderer.invoke('app:openUrl', url),
   relaunchAdmin: () => ipcRenderer.invoke('app:relaunchAdmin'),
 
   // Limpieza
@@ -52,6 +53,10 @@ contextBridge.exposeInMainWorld('kano', {
   healthInfo: () => ipcRenderer.invoke('health:info'),
   processes: () => ipcRenderer.invoke('health:processes'),
   devices: () => ipcRenderer.invoke('health:devices'),
+
+  // Controladores
+  graphics: () => ipcRenderer.invoke('drivers:graphics'),
+  driverUpdates: () => ipcRenderer.invoke('drivers:updates'),
 
   // winget
   wingetList: () => ipcRenderer.invoke('winget:list'),

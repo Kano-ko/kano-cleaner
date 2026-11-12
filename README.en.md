@@ -2,7 +2,7 @@
 
 **Windows 10 and 11 cleaner and health checker. Free, no Pro version, no ads, no telemetry.**
 
-[VersiÃ³n en espaÃ±ol](README.md) Â· [Download the latest release](../../releases/latest)
+[Versión en español](README.md) · [Download the latest release](../../releases/latest)
 
 ![Health check result](docs/capturas/resultado.png)
 
@@ -43,26 +43,28 @@ release, automatically and publicly (see [`.github/workflows`](.github/workflows
 | Section | What it does |
 |---|---|
 | **Checkup** | Score from 0 to 100, a summary of problems and a one-click fix for the safe ones. |
-| **Cleaning** | 18 junk and privacy categories: temp files, browser caches, thumbnails, error reports, Windows Update leftovers, history, cookies, recycle binâ€¦ |
+| **Cleaning** | 18 junk and privacy categories: temp files, browser caches, thumbnails, error reports, Windows Update leftovers, history, cookies, recycle bin… |
 | **Uninstaller** | Lists installed programs, opens their real uninstaller and finds leftovers. |
 | **Duplicate finder** | Finds identical files by comparing **content**, not names. |
 | **Disk usage** | Measures which folders take the most space and finds huge files. |
 | **Performance** | Memory usage, uptime and the hungriest processes (informational only). |
 | **Startup manager** | Enable or disable startup programs, just like Windows Task Manager. |
 | **Updates** | Updates installed programs through `winget`, Microsoft's official package manager. |
-| **Devices and drivers** | Lists devices Windows flags as faulty and explains how to fix them. |
+| **Drivers** | Driver version and date for each graphics card, a real update search on Microsoft Update, and a list of faulty devices. |
 | **Security** | Real Windows Defender status, threat history, quick or full scans, plus extra checks. |
 | **Settings and Help** | Light or dark theme, administrator permissions and plain-language explanations. |
 
 ## What it deliberately does **not** do
 
 - **No registry cleaning.** It does not speed anything up and it can break programs.
-- **No made-up driver updates.** Only devices Windows already flags as broken are listed.
+- **No made-up drivers.** Updates come from Microsoft Update, the same source Windows
+  Update uses, plus links to the vendor's official page. Nothing is ever downloaded from a
+  random site, and no "new version" is invented.
 - **No force-killing processes.** That loses unsaved work.
 - **It is not an antivirus.** It uses the real **Windows Defender** engine, which is the
   only thing allowed to scan the whole disk. Pretending otherwise would be dangerous.
-- **No data collection.** The only two network calls are the ones you ask for: `winget`
-  updates and Defender scans.
+- **No data collection.** The only network calls are the ones you ask for: `winget`
+  updates, the Microsoft Update driver search and Defender scans.
 
 ## Safety when deleting
 
@@ -78,9 +80,9 @@ release, automatically and publicly (see [`.github/workflows`](.github/workflows
 |---|---|
 | ![Cleaning](docs/capturas/limpieza.png) | ![Disk usage](docs/capturas/disco.png) |
 
-| Checkup | Result |
+| Checkup | Drivers |
 |---|---|
-| ![Checkup](docs/capturas/chequeo.png) | ![Checkup result](docs/capturas/resultado.png) |
+| ![Checkup](docs/capturas/chequeo.png) | ![Drivers](docs/capturas/controladores.png) |
 
 ## Requirements
 

@@ -31,6 +31,7 @@ src/core/          El trabajo real (escaneos y acciones)
   files.js         Duplicados, uso de disco y archivos grandes
   security.js      Windows Defender y comprobaciones propias
   health.js        Estado del equipo
+  drivers.js       Tarjetas gráficas y actualizaciones de Microsoft Update
 src/ui/            Interfaz (HTML, CSS y JavaScript sin frameworks)
 build/             Icono de la aplicación
 docs/capturas/     Capturas usadas en el README

@@ -51,6 +51,28 @@ app.on('browser-window-created', (_event, win) => {
       report.fatal = String(e && e.message ? e.message : e);
     }
 
+    if (process.env.KANO_SELFTEST === 'drivers') {
+      try {
+        console.log('SELFTEST-STEP controladores + busqueda ...');
+        report.drivers = await win.webContents.executeJavaScript(`(async () => {
+          await go('controladores');
+          const boton = document.querySelector('[data-action="driver-search"]');
+          boton.click();
+          for (let i = 0; i < 90; i++) {
+            await new Promise((r) => setTimeout(r, 1000));
+            if (!document.querySelector('#driverUpdates .progress-line')) break;
+          }
+          return {
+            tarjetas: document.querySelectorAll('.card .mono').length,
+            resultado: (document.querySelector('#driverUpdates')?.innerText || '').slice(0, 400),
+            failed: document.body.innerText.includes('Algo ha fallado')
+          };
+        })()`);
+      } catch (e) {
+        report.driversError = String(e && e.message ? e.message : e);
+      }
+    }
+
     if (process.env.KANO_SELFTEST === 'full') {
       try {
         console.log('SELFTEST-STEP chequeo ...');

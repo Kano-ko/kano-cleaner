@@ -86,6 +86,9 @@ const state = {
   disk: null,
   security: null,
   chequeo: null,
+  gpus: null,
+  devices: null,
+  driverUpdates: null,
 };
 
 const NAV = [
@@ -97,7 +100,7 @@ const NAV = [
   { id: 'rendimiento', label: 'Rendimiento', icon: 'rendimiento' },
   { id: 'inicio', label: 'Administrador de inicio', icon: 'inicio' },
   { id: 'actualizaciones', label: 'Actualizaciones', icon: 'actualizar' },
-  { id: 'controladores', label: 'Dispositivos y controladores', icon: 'controlador' },
+  { id: 'controladores', label: 'Controladores', icon: 'controlador' },
   { id: 'seguridad', label: 'Seguridad', icon: 'seguridad' },
 ];
 
@@ -980,15 +983,114 @@ async function wingetCheck() {
    Dispositivos y controladores
    ============================================================ */
 
+/* ============================================================
+   Controladores y dispositivos
+   ============================================================ */
+
 VIEWS.controladores = async () => {
   const content = $('#content');
-  content.innerHTML = `${pageHead('Dispositivos y controladores', '')}${progressLine('Revisando dispositivos…')}`;
-  const devices = await api.devices();
+  content.innerHTML = `${pageHead('Controladores', '')}${progressLine('Leyendo las tarjetas gráficas y los dispositivos…')}`;
+
+  const [gpus, devices] = await Promise.all([api.graphics(), api.devices()]);
+  state.gpus = gpus;
+  state.devices = devices;
+  renderDrivers();
+};
+
+/** "hace 16 meses" a partir de un número de días. */
+function antiguedad(dias) {
+  if (dias === null || dias === undefined) return 'fecha desconocida';
+  if (dias < 0) return 'fecha futura';
+  if (dias < 45) return `${dias} días`;
+  const meses = Math.round(dias / 30.44);
+  if (meses < 24) return `${meses} meses`;
+  return `${(dias / 365.25).toFixed(1).replace('.', ',')} años`;
+}
+
+function fechaCorta(ms) {
+  if (!ms) return '—';
+  return new Date(ms).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+function renderDrivers() {
+  const content = $('#content');
+  const gpus = state.gpus || [];
+  const devices = state.devices || [];
+  const fisicas = gpus.filter((g) => !g.virtual);
+  const virtuales = gpus.filter((g) => g.virtual);
+
+  const tarjetaGrafica = (g) => {
+    const nivel = g.virtual ? 'ghost' : g.estado === 'al-dia' ? 'ok' : g.estado === 'revisable' ? 'warn' : 'bad';
+    const texto = g.virtual ? 'virtual' : g.estado === 'al-dia' ? 'al día' : g.estado === 'revisable' ? 'revisable' : 'antiguo';
+    return `<div class="card">
+      <div class="row-between" style="align-items:flex-start;gap:12px">
+        <div style="min-width:0">
+          <h3 class="card-title" style="margin:0 0 3px">${esc(g.nombre)}</h3>
+          <div class="list-hint">${esc(g.fabricante || 'fabricante desconocido')}</div>
+        </div>
+        <span class="badge badge-${nivel}">${texto}</span>
+      </div>
+      <div class="grid grid-2" style="margin-top:16px;gap:12px">
+        <div>
+          <div class="stat-label">Versión instalada</div>
+          <div class="mono" style="font-size:12.5px">${esc(g.version || '—')}</div>
+        </div>
+        <div>
+          <div class="stat-label">Fecha del controlador</div>
+          <div class="small">${fechaCorta(g.fecha)} <span class="muted">· ${antiguedad(g.dias)}</span></div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        ${
+          g.web
+            ? `<button class="btn btn-soft btn-sm" data-action="open-url" data-url="${esc(g.web)}">${svg('actualizar')}Página del fabricante</button>`
+            : ''
+        }
+        <button class="btn btn-ghost btn-sm" data-action="open-devmgmt">Administrador de dispositivos</button>
+      </div>
+    </div>`;
+  };
 
   content.innerHTML = `
-    ${pageHead('Dispositivos y controladores', 'Windows avisa cuando un dispositivo no tiene controlador o falla.')}
-    ${notice('info', '<b>Sin milagros:</b> aquí no hay un "actualizador de controladores" que inventa versiones nuevas. Solo se listan los dispositivos que Windows marca con problemas, que es lo que de verdad se puede comprobar sin descargar software de terceros.')}
-    <div class="card" style="margin-top:14px;padding:0;overflow:hidden">
+    ${pageHead('Controladores', 'Qué controlador tienes instalado, cuánto tiempo tiene y si Windows ofrece algo más nuevo.')}
+
+    ${notice(
+      'info',
+      '<b>Cómo se comprueba de verdad:</b> la versión y la fecha salen del propio Windows, y las actualizaciones se buscan en <b>Microsoft Update</b>, la misma fuente que usa Windows Update. Los fabricantes no publican una lista abierta de su última versión, así que aquí no se inventa un número: si hay algo nuevo, lo dice Microsoft; si no, se enlaza a la web oficial.'
+    )}
+
+    <div class="group-title">Tarjetas gráficas</div>
+    ${
+      fisicas.length
+        ? `<div class="grid grid-2">${fisicas.map(tarjetaGrafica).join('')}</div>`
+        : `<div class="card">${emptyState('No se ha detectado ninguna tarjeta gráfica dedicada.', 'controlador')}</div>`
+    }
+
+    ${
+      virtuales.length
+        ? `<div class="group-title">Adaptadores virtuales</div>
+           <div class="grid grid-2">${virtuales.map(tarjetaGrafica).join('')}</div>`
+        : ''
+    }
+
+    <div class="card" style="margin-top:18px">
+      <div class="row-between">
+        <div style="min-width:0">
+          <h3 class="card-title">Actualizaciones disponibles</h3>
+          <p class="card-sub" style="margin:0">Busca en Microsoft Update los controladores que Windows tiene pendientes. Tarda entre 10 y 40 segundos.</p>
+        </div>
+        <div class="row">
+          <button class="btn" data-action="driver-search">${svg('buscar')}Buscar actualizaciones</button>
+          <button class="btn btn-ghost" data-action="open-url" data-url="ms-settings:windowsupdate">Abrir Windows Update</button>
+        </div>
+      </div>
+      <div id="driverUpdates" style="margin-top:14px">
+        ${notice('info', 'Pulsa <b>Buscar actualizaciones</b>. Solo se consulta cuando tú lo pides.')}
+      </div>
+    </div>
+
+    <div class="group-title">Dispositivos con problemas</div>
+    <div class="card" style="padding:0;overflow:hidden">
       <table class="table">
         <thead><tr><th>Dispositivo</th><th>Tipo</th><th>Estado</th><th class="num">Código</th></tr></thead>
         <tbody>
@@ -1009,12 +1111,50 @@ VIEWS.controladores = async () => {
         </tbody>
       </table>
     </div>
+
     <div class="card" style="margin-top:14px">
-      <h3 class="card-title">¿Y si un dispositivo falla?</h3>
-      <p class="card-sub">Abre el <b>Administrador de dispositivos</b> de Windows, busca el dispositivo amarillo y pulsa con el botón derecho → <i>Actualizar controlador</i>. Para la tarjeta gráfica, lo mejor es la web del fabricante (AMD, NVIDIA o Intel).</p>
+      <h3 class="card-title">Si un dispositivo falla</h3>
+      <p class="card-sub">Abre el <b>Administrador de dispositivos</b>, busca el icono amarillo y pulsa con el botón derecho → <i>Actualizar controlador</i>. Para la tarjeta gráfica, lo mejor suele ser la web del fabricante: AMD, NVIDIA e Intel publican ahí sus versiones estables antes que en Windows Update.</p>
       <button class="btn btn-ghost btn-sm" data-action="open-devmgmt">Abrir Administrador de dispositivos</button>
     </div>`;
-};
+}
+
+function renderDriverUpdates() {
+  const box = $('#driverUpdates');
+  const r = state.driverUpdates;
+  if (!box || !r) return;
+
+  if (!r.ok) {
+    box.innerHTML = notice('bad', `<b>No se ha podido consultar.</b> ${esc(r.error || '')}`);
+    return;
+  }
+
+  if (!r.items.length) {
+    box.innerHTML = notice(
+      'ok',
+      '<b>Windows no tiene ningún controlador pendiente para este equipo.</b> Si quieres la última versión de la tarjeta gráfica, usa el botón de la página del fabricante.'
+    );
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="list">
+      ${r.items
+        .map(
+          (i) => `<div class="list-row">
+            <div class="grow">
+              <div class="list-name">${esc(i.titulo)}</div>
+              <div class="list-hint">${esc(i.fabricante || 'fabricante desconocido')}${
+                i.modelo ? ' · ' + esc(i.modelo) : ''
+              }${i.fecha ? ' · ' + fechaCorta(i.fecha) : ''}</div>
+            </div>
+            ${i.clase ? `<span class="badge">${esc(i.clase)}</span>` : ''}
+          </div>`
+        )
+        .join('')}
+    </div>
+    <p class="card-sub" style="margin:14px 0 0">Se instalan desde <b>Windows Update → Actualizaciones opcionales</b>. Windows los descarga, los comprueba y reinicia si hace falta. Kano Cleaner no instala controladores por su cuenta: un controlador equivocado deja la pantalla en negro.</p>`;
+}
 
 /* ============================================================
    Seguridad
@@ -1407,6 +1547,19 @@ document.addEventListener('click', async (e) => {
       const r = await api.openPath(target.dataset.path);
       if (!r.ok) toast('No se pudo abrir esa carpeta.', 'bad');
       return;
+    }
+
+    case 'open-url': {
+      const r = await api.openUrl(target.dataset.url);
+      if (!r.ok) toast('No se pudo abrir el enlace.', 'bad');
+      return;
+    }
+
+    case 'driver-search': {
+      const box = $('#driverUpdates');
+      if (box) box.innerHTML = progressLine('Consultando Microsoft Update… puede tardar medio minuto.');
+      state.driverUpdates = await api.driverUpdates();
+      return renderDriverUpdates();
     }
 
     case 'show-folder':
